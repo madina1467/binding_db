@@ -26,6 +26,13 @@ class Book(models.Model):
     def get_url(self):
        return reverse('binding_detail', args=[self.id])
 
+BINDING_MODEL_TYPES = [
+    ('m1', 'Unspecified'),
+    ('m2', 'Tutorial'),
+    ('m3', 'Research'),
+    ('m4', 'Review'),
+]
+
 
 class Binding(models.Model):
     drug = models.TextField()
@@ -34,6 +41,7 @@ class Binding(models.Model):
     gcnnet_bindingdb_ic50 = models.FloatField()
     gcnnet_bdtdc_ic50 = models.FloatField()
     model = models.CharField(max_length=100)
+    type = models.CharField(max_length=2, choices=BINDING_MODEL_TYPES, default='m1')
 
     class Meta:
         ordering=('drug',)
