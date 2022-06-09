@@ -11,14 +11,14 @@ from elasticsearch.helpers import scan
 # Define function to display all books
 
 def binding_list(request):
-    book = Book.objects.all()
-    return render(request, 'binding_list.html', {'book': book })
+    binding = Binding.objects.all()
+    return render(request, 'binding_list.html', {'binding': binding })
 
     # # 
-    # {% for x in book %}
+    # {% for x in binding %}
     # <h3> <a href="{{ x.get_binding_details }}">{{x.drug}}</a></h3>
-    # <p class="lead">by {{x.author_name}}</p>
-    #   <p class="lead">${{x.price}}</p>
+    # <p class="lead">by {{x.drug}}</p>
+    #   <p class="lead">${{x.target}}</p>
     #  <hr>
     # {% endfor %}
 
@@ -94,6 +94,7 @@ def search(request):
             index="binding",
         )
         if results == '':
+            print('results: NOONE')
             results = 'None'
         # results = Binding.objects.filter(Q(drug__icontains=results) | Q(target__icontains=results) 
         # | Q(gcnnet_bindingdb_ic50__icontains=results) | Q(gcnnet_bdtdc_ic50__icontains=results) 
