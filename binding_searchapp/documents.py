@@ -2,6 +2,7 @@ from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 from binding_searchapp.models import Binding
 
+
 @registry.register_document
 class BindingDocument(Document):
     # drug = fields.TextField()
@@ -22,6 +23,7 @@ class BindingDocument(Document):
 
     class Django:
         model = Binding
+        # queryset_pagination = 5
         fields = [
             'drug',
             'target',

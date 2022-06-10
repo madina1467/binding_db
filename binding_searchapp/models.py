@@ -37,7 +37,7 @@ class Binding(models.Model):
     #         return 'bdtdc_ic50_shrinked_test'
 
     class Meta:
-        ordering = ('drug',)
+        ordering = ('bdtdc_ki',)
 
     def __str__(self):
         return self.drug

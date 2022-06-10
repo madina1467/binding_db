@@ -3,9 +3,9 @@
     <style>
 
         div {
-
             width: 100%;
         }
+
         table {
             font-family: arial, sans-serif;
             border-collapse: collapse;
@@ -17,9 +17,8 @@
             border: 1px solid #dddddd;
             text-align: left;
             padding: 8px;
-            {#white-space:nowrap;#}
-            {#overflow:hidden;#}
-            {#text-overflow:ellipsis;#}
+            font-size: 10px;
+        {#white-space:nowrap;#}{#overflow:hidden;#}{#text-overflow:ellipsis;#}
         }
 
         .content_td p {
@@ -41,8 +40,8 @@
 
 <body>
 <br/></br/>
-<div class="container">
-    <div class="col-md-8 offset-md-2">
+<div class="row">
+    <div class="col s4 offset-s4">
         {% if drug or target %}
             <h2>
                 {% with m1.count as total_results %}
@@ -78,6 +77,23 @@
                 </table>
             </div>
 
+
+            {#            <h3>DDDDDDDDD</h3>#}
+            {#            <a href="{{ c.get_binding_details }}"><h3>{{ c.drug }}</h3></a>#}
+            {#            <h3>{{ c }}</h3>#}
+
+
+        {% endif %}
+
+    </div>
+    <div class="col s4 offset-s4">
+        {% if drug or target %}
+            <h2>
+                {% with m1.count as total_results %}
+                    Found {{ total_results }} result{{ total_results|pluralize }}
+                {% endwith %}
+            </h2>
+
             <div style="background-color:gray;color:white;padding:20px;">
                 <h2>GAT_GCN</h2>
                 <table>
@@ -106,18 +122,18 @@
                 </table>
             </div>
 
-{#            <h3>DDDDDDDDD</h3>#}
-{#            <a href="{{ c.get_binding_details }}"><h3>{{ c.drug }}</h3></a>#}
-{#            <h3>{{ c }}</h3>#}
+
+            {#            <h3>DDDDDDDDD</h3>#}
+            {#            <a href="{{ c.get_binding_details }}"><h3>{{ c.drug }}</h3></a>#}
+            {#            <h3>{{ c }}</h3>#}
 
 
         {% endif %}
 
-        <form action="{% url 'binding_list' %}" class="form-inline" method="get">
-            <button type="submit" class="btn btn-primary btn-lg mb-2">Back</button>
-        </form>
-
     </div>
+    <form action="{% url 'binding_list' %}" class="form-inline" method="get">
+        <button type="submit" class="btn btn-primary btn-lg mb-2">Back</button>
+    </form>
 
 </div>
 </body>

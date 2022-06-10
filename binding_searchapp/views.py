@@ -2,6 +2,8 @@
 
 from django.shortcuts import render, get_object_or_404
 from .models import Binding
+from .pagination import CustomPagination
+from rest_framework.pagination import LimitOffsetPagination
 from .serializers import BindingSerializer
 from django.db.models import Q
 from django.views.generic import TemplateView
@@ -12,7 +14,6 @@ from elasticsearch.helpers import scan
 
 from elasticsearch_dsl import Q
 from binding_searchapp.documents import BindingDocument
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 
 
@@ -37,9 +38,6 @@ class SearchView(APIView, LimitOffsetPagination):
     title = settings.PAGE_TITLE
     drug = '*'
     target = '*'
-    count = 5
-    offset = 0
-    limit = 5
     model = Binding
     serializer_class = BindingSerializer
     document_class = BindingDocument
@@ -61,7 +59,7 @@ class SearchView(APIView, LimitOffsetPagination):
                   query=model),
             ],
             must_not=[],
-            should=[]
+            should=[],
         )
         return q
 
@@ -89,11 +87,18 @@ class SearchView(APIView, LimitOffsetPagination):
             self.set_drug_target(drug, target)
 
             q = self.generate_q_expression(self.type_to_string('m1'))
-            m1 = self.document_class.search().query(q)
+            search = self.document_class.search().query(q).sort({'bindingdb_kd':  "desc", 'bindingdb_ki':  "desc", 'bindingdb_ic50':  "desc", 'bdtdc_ic50':  "desc", 'bdtdc_ki':  "desc"}).extra(from_=0, size=5)
+            m1 = search.execute()
 
             q = self.generate_q_expression(self.type_to_string('m2'))
-            m2 = self.document_class.search().query(q)
+            search = self.document_class.search().query(q).sort({'bindingdb_kd':  "desc", 'bindingdb_ki':  "desc", 'bindingdb_ic50':  "desc", 'bdtdc_ic50':  "desc", 'bdtdc_ki':  "desc", }).extra(from_=0, size=5)
+            m2 = search.execute()
 
+            # print(f'Found {m2.hits.total.value} hit(s) for query: "{q}"')
+            # results = self.paginate_queryset(m2, request, view=self)
+            # serializer = self.serializer_class(results, many=True)
+            # print('results', results)
+            # print('get_paginated_response', self.get_paginated_response(serializer.data))
 
             return render(request, 'search.html',
                           {'drug': self.drug, 'target': self.target,
