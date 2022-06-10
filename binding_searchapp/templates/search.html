@@ -1,9 +1,15 @@
 <html>
 <head>
     <style>
+
+        div {
+
+            width: 100%;
+        }
         table {
             font-family: arial, sans-serif;
             border-collapse: collapse;
+            table-layout: fixed;
             width: 100%;
         }
 
@@ -11,7 +17,17 @@
             border: 1px solid #dddddd;
             text-align: left;
             padding: 8px;
+            {#white-space:nowrap;#}
+            {#overflow:hidden;#}
+            {#text-overflow:ellipsis;#}
         }
+
+        .content_td p {
+            max-width: 200px;
+            overflow-x: scroll;
+            text-overflow: ellipsis;
+        }
+
 
         tr:nth-child(even) {
             background-color: #dddddd;
@@ -27,68 +43,74 @@
 <br/></br/>
 <div class="container">
     <div class="col-md-8 offset-md-2">
-        {% if drug %}
-            <h3>AAAAAA</h3>
-        {% endif %}
-        {% if target %}
-            <h3>BBBBBB</h3>
-        {% endif %}
         {% if drug or target %}
-            <h3>CCCCC</h3>
             <h2>
-                {% with results.count as total_results %}
+                {% with m1.count as total_results %}
                     Found {{ total_results }} result{{ total_results|pluralize }}
                 {% endwith %}
             </h2>
 
-            {% for c in results %}
-                <div style="background-color:gray;color:white;padding:20px;">
-                    <h2>{{ c.drug }}</h2>
-                    <table>
+            <div style="background-color:gray;color:white;padding:20px;">
+                <h2>GCNNet</h2>
+                <table>
+                    <tr>
+                        <th>Drug</th>
+                        <th>Target</th>
+                        <th>bindingdb_kd</th>
+                        <th>bindingdb_ki</th>
+                        <th>bindingdb_ic50</th>
+                        <th>bdtdc_ic50</th>
+                        <th>bdtdc_ki</th>
+                    </tr>
+                    {% for c in m1 %}
                         <tr>
-                            <th>Company</th>
-                            <th>Contact</th>
-                            <th>Country</th>
+                            <td class="content_td"><p>{{ c.drug }}</p></td>
+                            <td class="content_td"><p>{{ c.target }}</p></td>
+                            <td>{{ c.bindingdb_kd|floatformat:3 }}</td>
+                            <td>{{ c.bindingdb_ki|floatformat:3 }}</td>
+                            <td>{{ c.bindingdb_ic50|floatformat:3 }}</td>
+                            <td>{{ c.bdtdc_ic50|floatformat:3 }}</td>
+                            <td>{{ c.bdtdc_ki|floatformat:3 }}</td>
                         </tr>
-                        <tr>
-                            <td>Alfreds Futterkiste</td>
-                            <td>Maria Anders</td>
-                            <td>Germany</td>
-                        </tr>
-                        <tr>
-                            <td>Centro comercial Moctezuma</td>
-                            <td>Francisco Chang</td>
-                            <td>Mexico</td>
-                        </tr>
-                        <tr>
-                            <td>Ernst Handel</td>
-                            <td>Roland Mendel</td>
-                            <td>Austria</td>
-                        </tr>
-                        <tr>
-                            <td>Island Trading</td>
-                            <td>Helen Bennett</td>
-                            <td>UK</td>
-                        </tr>
-                        <tr>
-                            <td>Laughing Bacchus Winecellars</td>
-                            <td>Yoshi Tannamuri</td>
-                            <td>Canada</td>
-                        </tr>
-                        <tr>
-                            <td>Magazzini Alimentari Riuniti</td>
-                            <td>Giovanni Rovelli</td>
-                            <td>Italy</td>
-                        </tr>
-                    </table>
-                </div>
+                    {% empty %}
+                        <h3>No results found.</h3>
+                    {% endfor %}
+                </table>
+            </div>
 
-                                <h3>DDDDDDDDD</h3>
-                                <a href="{{ c.get_binding_details }}"><h3>{{ c.drug }}</h3></a>
-                                <h3>{{ c }}</h3>
-            {% empty %}
-                <h3>No results found.</h3>
-            {% endfor %}
+            <div style="background-color:gray;color:white;padding:20px;">
+                <h2>GAT_GCN</h2>
+                <table>
+                    <tr>
+                        <th>Drug</th>
+                        <th>Target</th>
+                        <th>bindingdb_kd</th>
+                        <th>bindingdb_ki</th>
+                        <th>bindingdb_ic50</th>
+                        <th>bdtdc_ic50</th>
+                        <th>bdtdc_ki</th>
+                    </tr>
+                    {% for c in m2 %}
+                        <tr>
+                            <td class="content_td"><p>{{ c.drug }}</p></td>
+                            <td class="content_td"><p>{{ c.target }}</p></td>
+                            <td>{{ c.bindingdb_kd|floatformat:3 }}</td>
+                            <td>{{ c.bindingdb_ki|floatformat:3 }}</td>
+                            <td>{{ c.bindingdb_ic50|floatformat:3 }}</td>
+                            <td>{{ c.bdtdc_ic50|floatformat:3 }}</td>
+                            <td>{{ c.bdtdc_ki|floatformat:3 }}</td>
+                        </tr>
+                    {% empty %}
+                        <h3>No results found.</h3>
+                    {% endfor %}
+                </table>
+            </div>
+
+{#            <h3>DDDDDDDDD</h3>#}
+{#            <a href="{{ c.get_binding_details }}"><h3>{{ c.drug }}</h3></a>#}
+{#            <h3>{{ c }}</h3>#}
+
+
         {% endif %}
 
         <form action="{% url 'binding_list' %}" class="form-inline" method="get">

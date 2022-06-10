@@ -44,8 +44,9 @@ class SearchView(APIView, LimitOffsetPagination):
     serializer_class = BindingSerializer
     document_class = BindingDocument
     queryset = Binding.objects.all()
+    BINDING_MODELS = ['m1', 'm2']
 
-    def generate_q_expression(self):
+    def generate_q_expression(self, model):
         q = Q(
             'bool',
             must=[
@@ -55,6 +56,9 @@ class SearchView(APIView, LimitOffsetPagination):
                 Q('query_string',
                   default_field='target',
                   query=self.target),
+                Q('query_string',
+                  default_field='model',
+                  query=model),
             ],
             must_not=[],
             should=[]
@@ -72,28 +76,27 @@ class SearchView(APIView, LimitOffsetPagination):
         context["title"] = self.title
         return context
 
+    def type_to_string(self, name):
+        if name == 'm1':
+            return 'GCNNet'
+        elif name == 'm2':
+            return 'GAT_GCN'
+
     def get(self, request, *args, **kwargs):
         try:
             drug = request.GET.get('drug', '*')
             target = request.GET.get('target', '*')
             self.set_drug_target(drug, target)
 
-            q = self.generate_q_expression()
-            search = self.document_class.search().query(q)
-            response = search.execute()
+            q = self.generate_q_expression(self.type_to_string('m1'))
+            m1 = self.document_class.search().query(q)
 
-            # for hit in search:
-            #     print(hit.target)
+            q = self.generate_q_expression(self.type_to_string('m2'))
+            m2 = self.document_class.search().query(q)
 
-            print(f'Found {response.hits.total.value} hit(s) for query: "{self.drug}"')
 
-            # results = self.paginate_queryset(response, request, view=self)
-            # serializer = self.serializer_class(results, many=True)
-
-            # self.entry.m1 = search
             return render(request, 'search.html',
                           {'drug': self.drug, 'target': self.target,
-                           'results': search})
-            # return self.get_paginated_response(serializer.data)
+                           'm1': m1, 'm2': m2, 'method':self.type_to_string})
         except Exception as e:
             return HttpResponse(e, status=500)

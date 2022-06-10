@@ -25,7 +25,6 @@ class BindingDocument(Document):
         fields = [
             'drug',
             'target',
-            'gcnnet_bindingdb_ic50',
-            'gcnnet_bdtdc_ic50',
+            'bindingdb_kd', 'bindingdb_ki', 'bindingdb_ic50', 'bdtdc_ic50', 'bdtdc_ki',
             'model',
         ]

@@ -9,17 +9,21 @@ from django import forms
 from django.urls import reverse
 
 BINDING_MODEL_TYPES = [
-    ('m1', 'bdtdc_ki_shrinked_test'),
-    ('m2', 'bdtdc_kd_shrinked_test'),
-    ('m3', 'bdtdc_ic50_shrinked_test'),
+    ('m1', 'GCNNet'),
+    ('m2', 'GAT_GCN'),
+    ('m3', 'GATNet'),
 ]
 
 class Binding(models.Model):
     drug = models.TextField()
     target = models.TextField()
 
-    gcnnet_bindingdb_ic50 = models.FloatField()
-    gcnnet_bdtdc_ic50 = models.FloatField()
+    bindingdb_ic50 = models.FloatField()
+    bdtdc_ic50 = models.FloatField()
+    bdtdc_ki = models.FloatField()
+    bindingdb_ki = models.FloatField()
+    bindingdb_kd = models.FloatField()
+
     model = models.CharField(max_length=100)
 
     # type = models.CharField(max_length=2, choices=BINDING_MODEL_TYPES, default='m1')
@@ -42,13 +46,13 @@ class Binding(models.Model):
         return reverse('binding_detail', args=[self.id])
 
 
-class BindingForm(forms.ModelForm):
-    class Meta:
-        model = Binding
-        fields = (
-            'drug', 'target', 'gcnnet_bindingdb_ic50', 'gcnnet_bdtdc_ic50', 'model'
-        )
-
+# class BindingForm(forms.ModelForm):
+#     class Meta:
+#         model = Binding
+#         fields = (
+#             'drug', 'target', 'gcnnet_bindingdb_ic50', 'gcnnet_bdtdc_ic50', 'model'
+#         )
+#
 
 # class Entry(models.Model):
 #     m1 = ArrayField(
